@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block head %}
+	<title>蓝鲸开发框架</title>
+	{{ block.super }}
+{% endblock %}
+
+{% block navigation %}
+	<li class="king-navbar-active"><a href="{{ SITE_URL }}"><span>首页</span></a></li>
+	<li class="king-navbar-active"><a href="{{ SITE_URL }}helloworld/"><span>hello world</span></a></li>
+	<li class="king-navbar-active"><a href="{{ SITE_URL }}helloBlueking/"><span>Congratulation</span></a></li>
+	<li class="king-navbar-active"><a href="{{ SITE_URL }}modelsData/"><span>MagicBox</span></a></li>
+	<li class="king-navbar-active"><a href="{{ SITE_URL }}diskListenerHtml/"><span>磁盘使用率</span></a></li>
+{% endblock %}
+
+{% block content %}
+	<div>
+		<h3>蓝鲸开发框架<small>助力你的自动化</small></h3>
+	</div>
+<div style="margin: 100px auto;text-align: center">
+
+    <form action="{% url 'framework:helloBlueking' %}" method="POST" onsubmit="return dosubmit()" style="text-align: center;width: 200px;">
+        {% csrf_token %}
+        <div style="text-align: left" >
+            输入：
+            <input type="text" name="inputText" id="inputText" style="width: 120px;">
+            <input type="submit" id="btn" value="提交">
+        </div>
+        {% if inputText %}
+        <div style="text-align: left">
+            输出：{{inputText}}
+        </div>
+        {% endif %}
+    </form>
+
+</div>
+<script type="text/javascript">
+    var isCommitted = false;//表单是否已经提交标识，默认为false
+    function dosubmit(){
+        if(isCommitted==false){
+           isCommitted = true;//提交表单后，将表单是否已经提交标识设置为true
+           return true;//返回true让表单正常提交
+        }else{
+            return false;//返回false那么表单将不提交
+        }
+    }
+	var error = "{{ error }}";	//
+    if (error) {
+        alert("请输入：Hello Blueking");
+    }
+</script>
+{% endblock %}
+
+
+
+
