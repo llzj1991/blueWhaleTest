@@ -35,28 +35,33 @@
 <body class="bg-white" data-bg-color="bg-white">
     <div class="king-page-box">
         <div class="king-container clearfix">
-            <nav class="mb15">
-                <div style="overflow:hidden; z-index: inherit;" class="navbar king-horizontal-nav1  f14">
-                    <div class="navbar-container">
-                        <div class="navbar-header pull-left">
-                            <a class="navbar-brand" href="javascript:;">
-                                <img src="https://magicbox.bk.tencent.com/static_api/v3/bk/images/logo.png" class="logo"> </a>
-                        </div>
-                        <ul class="nav navbar-nav pull-left m0">
-                            <li class="active"><a href="{{ SITE_URL }}">首页</a></li>
-                            <li><a href="javascript:void(0);">关于我们</a></li>
-                            <li><a href="javascript:void(0);">联系我们</a></li>
+            <nav role="navigation" class="navbar navbar-default king-horizontal-nav2    f14 ">
+                <div class="container " style="width:100%;overflow:hidden;">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed navbar-toggle-sm" data-toggle="collapse" data-target="#king-horizontal-nav2-collapse">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="javascript:;">
+                            <img src="https://magicbox.bk.tencent.com/static_api/v3/bk/images/logo3.png" alt="" class="logo"> </a>
+                    </div>
+                    <div class="collapse navbar-collapse navbar-responsive-collapse" id="king-horizontal-nav2-collapse">
+                        <ul class="nav navbar-nav">
+                            <li class="king-navbar-active"><a href="{{ SITE_URL }}">首页</a></li>
+                            <li class="king-navbar-active"><a href="{{ SITE_URL }}helloworld/"><span>hello world</span></a></li>
+                            <li class="king-navbar-active"><a href="{{ SITE_URL }}helloBlueking/"><span>Congratulation</span></a></li>
+                            <li class="king-navbar-active"><a href="{{ SITE_URL }}modelsData/"><span>MagicBox</span></a></li>
+                            <li class="king-navbar-active"><a href="{{ SITE_URL }}diskListenerHtml/"><span>磁盘使用率</span></a></li>
                         </ul>
-                        <div class="navbar-header pull-right">
-                            <ul class="nav">
-                                <li class="user-info">
-                                    <a href="javascript:;">
-                                        <img class="img-rounded" src="https://magicbox.bk.tencent.com/static_api/v3/components/horizontal_nav1/images/avatar.png">
-                                        <span>admin</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li>
+                                <a href="javascript:;">
+                                    <span>管理者</span>
+                                </a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </nav>

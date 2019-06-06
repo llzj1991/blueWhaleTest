@@ -86,7 +86,7 @@ def diskListenerData(request):
             "series": [
                 {
                     "color": "#f9ce1d",
-                    "name": "磁盘使用率(小时)",
+                    "name": "X轴：日期，Y轴：百分比",
                     "data": disk_rates
                 }
             ],
