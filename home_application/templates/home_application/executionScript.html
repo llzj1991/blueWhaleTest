@@ -113,8 +113,7 @@
                                 </ul>
                                 <h3 class="king-block-title">执行结果</h3>
                             </div>
-                            <div class="king-block-content">
-                                <div id="script_content"></div>
+                            <div class="king-block-content" id="scriptDiv">
                             </div>
                         </div>
                     </div>
@@ -132,10 +131,11 @@
                     dataType:'json',
                     data: datas,
                     success: function(res){
-                        $("#script_content").html(" ");
+                        $("#scriptDiv").html("<ul class=\"list-group\" id='script_content'></ul>");
                         var rs = res.data;
+
                         for (var i in rs ) {
-                            $("#script_content").append(rs[i]);
+                            $("#script_content").append("<li class=\"list-group-item\">"+rs[i]+"</li>");
                         }
                      }
                 });
