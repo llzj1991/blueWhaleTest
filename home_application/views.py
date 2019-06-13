@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
+import subprocess, time, json
 from django.shortcuts import render,redirect,reverse,HttpResponse
 from django.core import serializers
 from django.http import JsonResponse
 from django.utils import timezone
 from blueapps.account.decorators import login_exempt
 from home_application import models
-import json
 
 # dev.class.o.qcloud.com
 # 开发框架中通过中间件默认是需要登录态的，如有不需要登录的，可添加装饰器login_exempt
@@ -18,7 +18,7 @@ def home(request):
 
 @login_exempt
 def modelsData(request):
-    """首页"""
+    """"""
     return render(request, 'home_application/modelsData.html')
 
 @login_exempt
@@ -98,4 +98,56 @@ def diskListenerData(request):
     #     item["update_at"] = str(item["update_at"].strftime("%Y-%m-%d %H:%M"))
     #print(data)
     return JsonResponse(data, safe=False)
+
+@login_exempt
+def executionScript(request):
+    """执行脚本API接口 api/api_ExecutionScript"""
+    print(request.method )
+    if request.method == 'POST':  # 当提交表单时
+        script_content = request.POST.get('script_content', '')
+        timeout = request.POST.get('timeout', '1')
+        dicts = api_executionScript(script_content,int(timeout))
+        return HttpResponse(json.dumps(dicts),content_type="application/json")
+    else:
+        return render(request, 'home_application/executionScript.html')
+
+def api_executionScript(script_content,timeout):
+    """执行脚本API接口 api/api_ExecutionScript"""
+    results = {}
+    if script_content and timeout:
+        try:
+            ret = excuteCmd(script_content, timeout)
+        except TimeoutError as e:
+            ret = repr(e)
+
+        results["result"] = True
+        results["data"] = ret
+        results["message"] = 'ok'
+        return results
+    else:
+        results["result"] = False
+        results["data"] = []
+        results["message"] = 'script_content不能为空'
+        return results
+
+
+def excuteCmd(cmd, timeout):
+    s = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+    beginTime = time.time()
+    while True:
+        if s.poll() is not None:
+            break
+        secondsPass = time.time() - beginTime
+        if timeout and timeout < secondsPass:
+            s.terminate()
+            return '执行超时，或延长超时时间'
+        out, err = s.communicate()
+        data_list = []
+        for line in out.splitlines():
+            ret = line.decode('gbk')
+            data_list.append(ret)
+    return data_list
+
+
+
 

@@ -14,7 +14,6 @@ from blueking.component.shortcuts import get_client_by_request
 
 logger = logging.getLogger('celery')
 
-
 def base64_encode(string):
     """对字符串进行base64编码"""
     return base64.b64encode(string).decode("utf-8")
@@ -72,15 +71,13 @@ def get_capacity_task():
             obj.save()
 
 
-@periodic_task(run_every=datetime.timedelta(seconds=3600))
+@periodic_task(run_every=datetime.timedelta(seconds=600))
 def get_disk_periodic():
     """获取磁盘使用率周期执行定义"""
     get_capacity_task.delay()
 
 def get_job_instance_log(client, job_instance_id):
-    """
-    对作业执行具体日志查询函数
-    """
+    """对作业执行具体日志查询函数"""
     kwargs = {
         "bk_app_code": "bluewhaletest",
         "bk_app_secret": "295ee595-b518-4736-a0a3-58c9d6eba539",
