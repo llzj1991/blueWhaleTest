@@ -144,7 +144,8 @@ def excuteCmd(cmd, timeout):
             data_list.append('执行超时，可适当延长timeout时间')
             break
         out, err = s.communicate()
-        data_list.append(f'执行脚本失败，请检查。')
+        if err==None:
+            data_list.append('执行失败，请检查脚本。')
         for line in out.splitlines():
             ret = line.decode('gbk')
             data_list.append(ret)
