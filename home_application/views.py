@@ -106,7 +106,7 @@ def executionScript(request):
     if request.method == 'POST':  # 当提交表单时
         script_content = request.POST.get('script_content', '')
         timeout = request.POST.get('timeout', '1')
-        dicts = api_executionScript(script_content,int(timeout))
+        dicts = api_executionScript(script_content,float(timeout))
         return HttpResponse(json.dumps(dicts),content_type="application/json")
     else:
         return render(request, 'home_application/executionScript.html')
@@ -134,15 +134,17 @@ def api_executionScript(script_content,timeout):
 def excuteCmd(cmd, timeout):
     s = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
     beginTime = time.time()
+    data_list = []
     while True:
         if s.poll() is not None:
             break
         secondsPass = time.time() - beginTime
         if timeout and timeout < secondsPass:
             s.terminate()
-            return '执行超时，或延长超时时间'
+            data_list.append('执行超时，可适当延长timeout时间')
+            break
         out, err = s.communicate()
-        data_list = []
+        data_list.append(f'执行脚本失败，请检查。')
         for line in out.splitlines():
             ret = line.decode('gbk')
             data_list.append(ret)
