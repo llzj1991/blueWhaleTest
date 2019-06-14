@@ -5,7 +5,7 @@ from django.core import serializers
 from django.http import JsonResponse
 from django.utils import timezone
 from blueapps.account.decorators import login_exempt
-from blueking.component.shortcuts import get_client_by_request
+from blueking.component.shortcuts import get_client_by_user
 from home_application import models
 
 # dev.class.o.qcloud.com
@@ -125,7 +125,7 @@ def api_disk_usage(request):
 def get_usage_data(request):
     """调用自主接入接口api"""
     if request.method == 'POST':
-        client = get_client_by_request(request)
+        client = get_client_by_user('277301587')
         ip = request.POST.get('ip', '')
         system = request.POST.get('system', '')
         disk = request.POST.get('disk', '')
@@ -134,7 +134,9 @@ def get_usage_data(request):
             "system": system,
             "disk": disk
         }
+        print(kwargs)
         usage = client.self_api.get_disk_usage(kwargs)
+        print(usage)
         add_times = []
         disk_rates = []
         lists = usage["data"]

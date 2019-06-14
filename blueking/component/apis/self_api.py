@@ -9,6 +9,6 @@ class CollectionsGetDiskUsage(object):
 
         self.get_disk_usage = ComponentAPI(
             client=self.client, method='GET',
-            path='api/c/self-service-api/bluewhaletest/api/get_disk_usage/',
+            path='/api/c/self-service-api/bluewhaletest/api/get_disk_usage/',
             description=u'查询指定的磁盘使用率'
         )
