@@ -102,7 +102,6 @@ def diskListenerData(request):
 @login_exempt
 def executionScript(request):
     """执行脚本API接口 api/api_ExecutionScript"""
-    print(request.method )
     if request.method == 'POST':  # 当提交表单时
         script_content = request.POST.get('script_content', '')
         timeout = request.POST.get('timeout', '1')
@@ -144,7 +143,7 @@ def excuteCmd(cmd, timeout):
             data_list.append('执行超时，可适当延长timeout时间')
             break
         out, err = s.communicate()
-        if err==None:
+        if err!=None:
             data_list.append('执行失败，请检查脚本。')
         for line in out.splitlines():
             ret = line.decode('gbk')
