@@ -5,6 +5,7 @@ from django.core import serializers
 from django.http import JsonResponse
 from django.utils import timezone
 from blueapps.account.decorators import login_exempt
+from blueking.component.shortcuts import get_client_by_request
 from home_application import models
 
 # dev.class.o.qcloud.com
@@ -99,23 +100,33 @@ def diskListenerData(request):
     #print(data)
     return JsonResponse(data, safe=False)
 
+
 @login_exempt
 def executionScript(request):
     """执行脚本API接口 api/api_ExecutionScript"""
     if request.method == 'POST':  # 当提交表单时
-        script_content = request.POST.get('script_content', '')
-        timeout = request.POST.get('timeout', '1')
-        dicts = api_executionScript(script_content,float(timeout))
-        return HttpResponse(json.dumps(dicts),content_type="application/json")
+        client = get_client_by_request(request)
+        # from blueking.component.shortcuts import get_client_by_user
+        # client = get_client_by_user('277301587')
+        kwargs = {}
+        kwargs["script_content"] = request.POST.get('script_content', '')   # {"script_content": script_content, "timeout": timeout }
+        kwargs["timeout"] = request.POST.get('timeout', '1')
+
+        jsonData = client.executionScript.get_execution_script(json.dumps(kwargs))
+    
+        return HttpResponse(jsonData,content_type="application/json")
     else:
         return render(request, 'home_application/executionScript.html')
 
-def api_executionScript(script_content,timeout):
+@login_exempt
+def api_executionScript(request):
     """执行脚本API接口 api/api_ExecutionScript"""
     results = {}
+    script_content = request.GET.get('script_content', '')
+    timeout = request.GET.get('timeout', '1')
     if script_content and timeout:
         try:
-            ret = excuteCmd(script_content, timeout)
+            ret = excuteCmd(script_content, float(timeout))
         except TimeoutError as e:
             ret = repr(e)
 
@@ -127,9 +138,9 @@ def api_executionScript(script_content,timeout):
         results["result"] = False
         results["data"] = []
         results["message"] = 'script_content不能为空'
-        return results
+        return JsonResponse(results)
 
-
+@login_exempt
 def excuteCmd(cmd, timeout):
     s = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
     beginTime = time.time()

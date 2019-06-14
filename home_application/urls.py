@@ -25,4 +25,6 @@ urlpatterns = (
     url(r'diskListenerHtml/', views.diskListenerHtml, name="diskListenerHtml"),
     url(r'diskListenerData/', views.diskListenerData, name="diskListenerData"),
     url(r'executionScript/', views.executionScript, name="executionScript"),
+    url(r'api/get_execution_script/', views.api_executionScript, name="apiExecutionScript"),
+
 )
