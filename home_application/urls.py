@@ -24,7 +24,7 @@ urlpatterns = (
     url(r'modelsData/', views.modelsData, name="modelsData"),
     url(r'diskListenerHtml/', views.diskListenerHtml, name="diskListenerHtml"),
     url(r'diskListenerData/', views.diskListenerData, name="diskListenerData"),
-    url(r'executionScript/', views.executionScript, name="executionScript"),
-    url(r'api/get_execution_script/', views.api_executionScript, name="apiExecutionScript"),
+    url(r'api/get_disk_usage/', views.api_disk_usage, name="apiDiskUsage"),
+    url(r'getUsageData/', views.get_usage_data, name="getUsageData"),
 
 )

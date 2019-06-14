@@ -66,17 +66,57 @@
                     </div>
                 </div>
             </nav>
-            <div class="king-block king-block-bordered king-block-themed mb0">
-                <div class="king-block-header king-info">
-                    <ul class="king-block-options">
-                        <li>
-                            <!-- <button type="button"><i class="fa fa-cog"></i></button> -->
-                        </li>
-                    </ul>
-                    <h3 class="king-block-title">磁盘使用率</h3>
+            <div class="king-panel8 m15">
+                <div class="king-panel8-header">
+                    <h3 class="king-panel8-title king-info">磁盘使用率查询参数</h3>
                 </div>
-                <div class="king-block-content">
-                    <div style="height: 300px; position: relative;" id="chart_1559803155852" class="king-chart-box chart-line  k-chart" data-role="chart"></div>
+                <div class="king-panel8-content pt25">
+                    <form class="form-horizontal" id="getFormData">
+                         {% csrf_token %}
+                        <div class="form-group clearfix ">
+                            <label class="col-sm-3 control-label bk-lh30 pt0">IP地址：</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control bk-valign-top" name="ip" placeholder="如：127.0.0.1"> </div>
+                        </div>
+                        <div class="form-group clearfix ">
+                            <label class="control-label col-sm-3 bk-lh30 pt0">使用系统：</label>
+                            <div class="col-sm-9">
+                                <div class="radio pt0">
+                                    <label class="mr10">
+                                        <input type="radio" name="system" id="" class="bk-top5" value="windows" checked="checked">
+                                        <span class="bk-lh30">windows</span>
+                                    </label>
+                                    <label class="mr10">
+                                        <input type="radio" name="system" id="" class="bk-top5" value="linux">
+                                        <span class="bk-lh30">linux</span>
+                                    </label>
+                                    <label class="mr10">
+                                        <input type="radio" name="system" id="" class="bk-top5" value="macOS">
+                                        <span class="bk-lh30">macOS</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group clearfix ">
+                            <label class="col-sm-3 control-label bk-lh30 pt0">磁盘：</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control bk-valign-top" name="disk" placeholder="如：C"> </div>
+                        </div>
+                        <div class="form-group clearfix">
+                            <div class="col-sm-9 col-sm-offset-3">
+                                <button type="button" class="king-btn mr10  king-success" id="submitData">提交</button>
+                                <button type="reset" class="king-btn king-default ">重置</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="king-panel8 m15">
+                <div class="king-panel8-header">
+                    <h3 class="king-panel8-title king-info">磁盘使用率结果</h3>
+                </div>
+                <div class="king-panel8-content pt25">
+                    <div style="height: 300px; position: relative;" id="chart_1560496773217" class="king-chart-box chart-line  k-chart" data-role="chart"></div>
                 </div>
             </div>
         </div>
@@ -120,34 +160,25 @@
             });
         }
 
-        function initKendoLineChart(conf){
-            // 异步请求后台数据
+        $("#submitData").click(function(){
+            var datas = $('#getFormData').serialize();
             $.ajax({
-                url: conf.url,
-                type: 'GET',
-                dataType: conf.dataType,
+                url: "{% url 'framework:getUsageData' %}",
+                type: 'post',
+                dataType:'json',
+                data: datas,
                 success: function(res){
-                    //获取数据成功
-                    if (res.result){
+                     if (res.result){
                         var data = {
                             series: res.data.series,
                             categories: res.data.categories
                         };
                         createKendoLineChart({
-                            selector: conf.container, // 图表容器
+                            selector: '#chart_1560496773217', // 图表容器
                             data: data // 图表数据
                         });
                     }
-                }
-            });
-        }
-    </script>
-    <script>
-        $(function(){
-            initKendoLineChart({
-                url: "{% url 'framework:diskListenerData' %}",
-                dataType: 'json',
-                container: '#chart_1559803155852'
+                 }
             });
         });
     </script>

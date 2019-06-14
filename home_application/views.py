@@ -94,72 +94,75 @@ def diskListenerData(request):
             "categories": add_times
         }
     }
-    # for item in items:
-    #     item["creat_at"] = str(item["creat_at"].strftime("%Y-%m-%d %H:%M"))
-    #     item["update_at"] = str(item["update_at"].strftime("%Y-%m-%d %H:%M"))
-    #print(data)
+
     return JsonResponse(data, safe=False)
 
+@login_exempt
+def api_disk_usage(request):
+    """查询磁盘使用率API接口"""
+    ip = request.GET.get('ip', '')
+    system = request.GET.get('system', '')
+    disk = request.GET.get('disk', '')
+    if ip and system and disk:
+        computers = models.DiskUsage.objects.filter(ip=ip, system=system, disk=disk).order_by("id")
+    else:
+        return JsonResponse({
+            "code": -1,
+            "result": False,
+            "data": [],
+            "message": '参数不完整'
+        })
+    diskList = list(computers)
+
+    return JsonResponse({
+        "code": 0,
+        "result": True,
+        "data": diskList,
+        "message": 'success'
+    })
 
 @login_exempt
-def executionScript(request):
-    """执行脚本API接口 api/api_ExecutionScript"""
-    if request.method == 'POST':  # 当提交表单时
+def get_usage_data(request):
+    """调用自主接入接口api"""
+    if request.method == 'POST':
         client = get_client_by_request(request)
-        # from blueking.component.shortcuts import get_client_by_user
-        # client = get_client_by_user('277301587')
-        kwargs = {}
-        kwargs["script_content"] = request.POST.get('script_content', '')   # {"script_content": script_content, "timeout": timeout }
-        kwargs["timeout"] = request.POST.get('timeout', '1')
-
-        jsonData = client.executionScript.get_execution_script(json.dumps(kwargs))
-    
-        return HttpResponse(jsonData,content_type="application/json")
+        ip = request.POST.get('ip', '')
+        system = request.POST.get('system', '')
+        disk = request.POST.get('disk', '')
+        kwargs = {
+            "ip": ip,
+            "system": system,
+            "disk": disk
+        }
+        usage = client.self_api.get_disk_usage(kwargs)
+        add_times = []
+        disk_rates = []
+        lists = usage["data"]
+        if usage["result"]:
+            for diskList in lists:
+                add_times.append(str(diskList["add_time"].strftime("%Y-%m-%d %H:%M")))
+                disk_rates.append(diskList["disk_rate"])
+            data = {
+                "code": 0,
+                "result": True,
+                "messge": "success",
+                "data": {
+                    "title": "标题",
+                    "series": [
+                        {
+                            "color": "#f9ce1d",
+                            "name": "X轴：日期，Y轴：百分比",
+                            "data": disk_rates
+                        }
+                    ],
+                    "categories": add_times
+                }
+            }
+            return JsonResponse(data)
+        else:
+            return JsonResponse(usage)
     else:
-        return render(request, 'home_application/executionScript.html')
-
-@login_exempt
-def api_executionScript(request):
-    """执行脚本API接口 api/api_ExecutionScript"""
-    results = {}
-    script_content = request.GET.get('script_content', '')
-    timeout = request.GET.get('timeout', '1')
-    if script_content and timeout:
-        try:
-            ret = excuteCmd(script_content, float(timeout))
-        except TimeoutError as e:
-            ret = repr(e)
-
-        results["result"] = True
-        results["data"] = ret
-        results["message"] = 'ok'
-        return results
-    else:
-        results["result"] = False
-        results["data"] = []
-        results["message"] = 'script_content不能为空'
-        return JsonResponse(results)
-
-@login_exempt
-def excuteCmd(cmd, timeout):
-    s = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
-    beginTime = time.time()
-    data_list = []
-    while True:
-        if s.poll() is not None:
-            break
-        secondsPass = time.time() - beginTime
-        if timeout and timeout < secondsPass:
-            s.terminate()
-            data_list.append('执行超时，可适当延长timeout时间')
-            break
-        out, err = s.communicate()
-        if err!=None:
-            data_list.append('执行失败，请检查脚本。')
-        for line in out.splitlines():
-            ret = line.decode('gbk')
-            data_list.append(ret)
-    return data_list
+        return render(request, 'home_application/getDiskUsage.html')
 
 
 
