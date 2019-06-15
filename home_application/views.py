@@ -125,7 +125,6 @@ def api_disk_usage(request):
 def get_usage_data(request):
     """调用自主接入接口api"""
     if request.method == 'POST':
-        client = get_client_by_user('277301587')
         ip = request.POST.get('ip', '')
         system = request.POST.get('system', '')
         disk = request.POST.get('disk', '')
@@ -135,6 +134,7 @@ def get_usage_data(request):
             "disk": disk
         }
         print(kwargs)
+        client = get_client_by_user('277301587')
         usage = client.self_api.get_disk_usage(kwargs)
         print(usage)
         add_times = []
