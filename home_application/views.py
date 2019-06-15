@@ -103,8 +103,16 @@ def api_disk_usage(request):
     ip = request.GET.get('ip', '')
     system = request.GET.get('system', '')
     disk = request.GET.get('disk', '')
+    models.DiskUsag.objects.filter(ip=ip).update(disk='usr')
     if ip and system and disk:
         computers = models.DiskUsage.objects.filter(ip=ip, system=system, disk=disk).order_by("id")
+        diskList = list(computers)
+        return JsonResponse({
+            "code": 0,
+            "result": True,
+            "data": diskList,
+            "message": 'success'
+        })
     else:
         return JsonResponse({
             "code": -1,
@@ -112,14 +120,7 @@ def api_disk_usage(request):
             "data": [],
             "message": '参数不完整'
         })
-    diskList = list(computers)
 
-    return JsonResponse({
-        "code": 0,
-        "result": True,
-        "data": diskList,
-        "message": 'success'
-    })
 
 @login_exempt
 def get_usage_data(request):
@@ -135,7 +136,7 @@ def get_usage_data(request):
             "system": system,
             "disk": disk
         }
-        print(kwargs)
+
         client = get_client_by_user('277301587')
         usage = client.self_api.get_disk_usage(kwargs)
         print(usage)
