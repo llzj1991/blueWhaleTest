@@ -129,6 +129,8 @@ def get_usage_data(request):
         system = request.POST.get('system', '')
         disk = request.POST.get('disk', '')
         kwargs = {
+            "bk_app_code": "bluewhaletest",
+            "bk_app_secret": "295ee595-b518-4736-a0a3-58c9d6eba539",
             "ip": ip,
             "system": system,
             "disk": disk
