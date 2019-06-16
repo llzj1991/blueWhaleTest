@@ -103,7 +103,7 @@ def api_disk_usage(request):
     ip = request.GET.get('ip', '')
     system = request.GET.get('system', '')
     disk = request.GET.get('disk', '')
-    models.DiskUsag.objects.filter(ip=ip).update(disk='usr')
+
     if ip and system and disk:
         computers = models.DiskUsage.objects.filter(ip=ip, system=system, disk=disk).order_by("id")
         diskList = list(computers)
