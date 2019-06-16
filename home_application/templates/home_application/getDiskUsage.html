@@ -228,7 +228,8 @@
         function onDiskClick() {
             var _clickJS = '<script>';
             for (var key in jsondata) {
-                 _clickJS = _clickJS + '$("#diskTime").on("click","'+'#'+key+'",function(){defaultDisk(jsondata["'+key+'"], "'+key+'");});\n'
+                var strKey = key.replace(/\-/g,"");
+                 _clickJS = _clickJS + '$("#diskTime").on("click","'+'#diskData_'+strKey+'",function(){defaultDisk(jsondata["'+key+'"], "'+key+'");});\n'
             }
             _clickJS = _clickJS + '<\/script>';
             $("#diskTime").after(_clickJS);
