@@ -65,7 +65,7 @@ def get_capacity_task():
             disk_able = diskStr[3]
             disk_rate = diskStr[4].replace("%", "")
             disk_mount = diskStr[5]
-            obj = models.DiskUsage.objects.create(file_system=file_system, disk_capacity=disk_capacity,
+            obj = models.DiskUsages.objects.create(file_system=file_system, disk_capacity=disk_capacity,
                                                   disk_used=disk_used, disk_able=disk_able, disk_rate=disk_rate,
                                                   disk_mount=disk_mount)
             obj.save()
