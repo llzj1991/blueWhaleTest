@@ -149,34 +149,8 @@ def get_usage_data(request):
             "system": system,
             "disk": disk
         }
-
         client = get_client_by_user('277301587')
         usage = client.self_api.get_disk_usage(kwargs)
-        # add_times = []
-        # disk_rates = []
-        # lists = usage["data"]
-        # if usage["result"]:
-        #     for diskList in lists:
-        #         add_times.append(diskList["add_time"])
-        #         disk_rates.append(diskList["disk_rate"])
-        #     data = {
-        #         "code": 0,
-        #         "result": True,
-        #         "messge": "success",
-        #         "data": {
-        #             "title": "标题",
-        #             "series": [
-        #                 {
-        #                     "color": "#f9ce1d",
-        #                     "name": "X轴：日期，Y轴：百分比",
-        #                     "data": disk_rates
-        #                 }
-        #             ],
-        #             "categories": add_times
-        #         }
-        #     }
-        #     return JsonResponse(data)
-        # else:
         return JsonResponse(usage)
     else:
         return render(request, 'home_application/getDiskUsage.html')
