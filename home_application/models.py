@@ -14,7 +14,7 @@ class Computer(models.Model):
     # def __unicode__(self):
     #     return self.name
 
-class DiskUsage(models.Model):
+class DiskUsages(models.Model):
     ip = models.CharField('ip地址',default='10.0.1.80',max_length=32)
     system  = models.CharField('系统',max_length=16,default='linux')  # 系统类型
     disk = models.CharField('磁盘',max_length=16,default='usr')  # 磁盘

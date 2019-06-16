@@ -72,7 +72,7 @@ def diskListenerHtml(request):
 @login_exempt
 def diskListenerData(request):
     """磁盘使用率数据"""
-    disks = models.DiskUsage.objects.values("disk_rate","add_time").order_by("id")
+    disks = models.DiskUsages.objects.values("disk_rate","add_time").order_by("id")
     diskLists = list(disks)
     add_times = []
     disk_rates = []
@@ -106,7 +106,7 @@ def api_disk_usage(request):
     disk = request.GET.get('disk', '')
     try:
         if ip and system and disk:
-            computers = models.DiskUsage.objects.filter(ip=ip, system=system, disk=disk).order_by("id")
+            computers = models.DiskUsages.objects.filter(ip=ip, system=system, disk=disk).order_by("id")
             diskList = []
             for _i in computers:
                 diskList.append({
