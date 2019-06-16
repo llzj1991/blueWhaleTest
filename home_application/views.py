@@ -112,6 +112,7 @@ def api_disk_usage(request):
                 diskList.append({
                     'ip':_i.ip,
                     'system':_i.system,
+                    'disk':_i.disk,
                     'disk_rate':_i.disk_rate,
                     'add_time':datetime.datetime.strftime(_i.add_time,'%Y-%m-%d %H:%M:%S'),
                 })
@@ -144,8 +145,6 @@ def get_usage_data(request):
         system = request.POST.get('system', '')
         disk = request.POST.get('disk', '')
         kwargs = {
-            # "bk_app_code": "bluewhaletest",
-            # "bk_app_secret": "295ee595-b518-4736-a0a3-58c9d6eba539",
             "ip": ip,
             "system": system,
             "disk": disk
@@ -153,32 +152,32 @@ def get_usage_data(request):
 
         client = get_client_by_user('277301587')
         usage = client.self_api.get_disk_usage(kwargs)
-        add_times = []
-        disk_rates = []
-        lists = usage["data"]
-        if usage["result"]:
-            for diskList in lists:
-                add_times.append(diskList["add_time"])
-                disk_rates.append(diskList["disk_rate"])
-            data = {
-                "code": 0,
-                "result": True,
-                "messge": "success",
-                "data": {
-                    "title": "标题",
-                    "series": [
-                        {
-                            "color": "#f9ce1d",
-                            "name": "X轴：日期，Y轴：百分比",
-                            "data": disk_rates
-                        }
-                    ],
-                    "categories": add_times
-                }
-            }
-            return JsonResponse(data)
-        else:
-            return JsonResponse(usage)
+        # add_times = []
+        # disk_rates = []
+        # lists = usage["data"]
+        # if usage["result"]:
+        #     for diskList in lists:
+        #         add_times.append(diskList["add_time"])
+        #         disk_rates.append(diskList["disk_rate"])
+        #     data = {
+        #         "code": 0,
+        #         "result": True,
+        #         "messge": "success",
+        #         "data": {
+        #             "title": "标题",
+        #             "series": [
+        #                 {
+        #                     "color": "#f9ce1d",
+        #                     "name": "X轴：日期，Y轴：百分比",
+        #                     "data": disk_rates
+        #                 }
+        #             ],
+        #             "categories": add_times
+        #         }
+        #     }
+        #     return JsonResponse(data)
+        # else:
+        return JsonResponse(usage)
     else:
         return render(request, 'home_application/getDiskUsage.html')
 

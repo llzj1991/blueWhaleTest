@@ -181,6 +181,17 @@
                  }
             });
         });
+        function diskUsage(datas) {
+
+        }
+        var json = {}
+        arr.forEach(function(v){
+            if(json[v.time]){
+                json[v.time].push(v.title);
+            }else{
+                json[v.time] = [v.title];
+            }
+        })
     </script>
 </body>
 
