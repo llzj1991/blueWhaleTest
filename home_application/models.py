@@ -26,3 +26,5 @@ class DiskUsage(models.Model):
     disk_mount = models.CharField('挂载点', max_length=64)
     add_time = models.DateTimeField('录入时间', auto_now=True, max_length=0)
 
+
+

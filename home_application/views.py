@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import datetime
 import subprocess, time, json
 from django.shortcuts import render,redirect,reverse,HttpResponse
 from django.core import serializers
@@ -103,24 +104,37 @@ def api_disk_usage(request):
     ip = request.GET.get('ip', '')
     system = request.GET.get('system', '')
     disk = request.GET.get('disk', '')
-
-    if ip and system and disk:
-        computers = models.DiskUsage.objects.filter(ip=ip, system=system, disk=disk).order_by("id")
-        diskList = list(computers)
+    try:
+        if ip and system and disk:
+            computers = models.DiskUsage.objects.filter(ip=ip, system=system, disk=disk).order_by("id")
+            diskList = []
+            for _i in computers:
+                diskList.append({
+                    'ip':_i.ip,
+                    'system':_i.system,
+                    'disk_rate':_i.disk_rate,
+                    'add_time':datetime.datetime.strftime(_i.add_time,'%Y-%m-%d %H:%M:%S'),
+                })
+            return JsonResponse({
+                "code": 0,
+                "result": True,
+                "data": diskList,
+                "message": 'success'
+            })
+        else:
+            return JsonResponse({
+                "code": -1,
+                "result": False,
+                "data": [],
+                "message": '参数不完整'
+            })
+    except Exception as e:
         return JsonResponse({
-            "code": 0,
-            "result": True,
-            "data": diskList,
-            "message": 'success'
-        })
-    else:
-        return JsonResponse({
-            "code": -1,
+            "code": -2,
             "result": False,
             "data": [],
-            "message": '参数不完整'
+            "message": '内部错误:%s' % e
         })
-
 
 @login_exempt
 def get_usage_data(request):
@@ -130,8 +144,8 @@ def get_usage_data(request):
         system = request.POST.get('system', '')
         disk = request.POST.get('disk', '')
         kwargs = {
-            "bk_app_code": "bluewhaletest",
-            "bk_app_secret": "295ee595-b518-4736-a0a3-58c9d6eba539",
+            # "bk_app_code": "bluewhaletest",
+            # "bk_app_secret": "295ee595-b518-4736-a0a3-58c9d6eba539",
             "ip": ip,
             "system": system,
             "disk": disk
@@ -139,13 +153,12 @@ def get_usage_data(request):
 
         client = get_client_by_user('277301587')
         usage = client.self_api.get_disk_usage(kwargs)
-        print(usage)
         add_times = []
         disk_rates = []
         lists = usage["data"]
         if usage["result"]:
             for diskList in lists:
-                add_times.append(str(diskList["add_time"].strftime("%Y-%m-%d %H:%M")))
+                add_times.append(diskList["add_time"])
                 disk_rates.append(diskList["disk_rate"])
             data = {
                 "code": 0,
