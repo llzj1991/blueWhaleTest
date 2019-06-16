@@ -71,7 +71,7 @@ def get_capacity_task():
             obj.save()
 
 
-@periodic_task(run_every=datetime.timedelta(seconds=600))
+@periodic_task(run_every=datetime.timedelta(seconds=3600))
 def get_disk_periodic():
     """获取磁盘使用率周期执行定义"""
     get_capacity_task.delay()
