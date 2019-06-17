@@ -114,7 +114,7 @@ def api_disk_usage(request):
                     'system':_i.system,
                     'disk':_i.disk,
                     'disk_rate':_i.disk_rate,
-                    'add_time':datetime.datetime.strftime(_i.add_time,'%Y-%m-%d %H:%M:%S'),
+                    'add_time':datetime.datetime.strftime(_i.add_time,'%Y-%m-%d %H:%M'),#%s
                 })
             return JsonResponse({
                 "code": 0,
