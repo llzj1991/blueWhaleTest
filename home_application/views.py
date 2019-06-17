@@ -100,7 +100,7 @@ def diskListenerData(request):
 
 @login_exempt
 def api_disk_usage(request):
-    """查询磁盘使用率API接口"""
+    """查询指定磁盘使用率API接口"""
     ip = request.GET.get('ip', '')
     system = request.GET.get('system', '')
     disk = request.GET.get('disk', '')

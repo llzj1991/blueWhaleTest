@@ -84,7 +84,7 @@
                                     <div class="form-group clearfix ">
                                         <label class="col-sm-3 control-label bk-lh30 pt0">IP地址：</label>
                                         <div class="col-sm-9">
-                                            <input type="text" class="form-control bk-valign-top" name="ip" placeholder="如：127.0.0.1"> </div>
+                                            <input type="text" class="form-control bk-valign-top" name="ip" placeholder="如：127.0.0.1,10.0.1.80"> </div>
                                     </div>
                                     <div class="form-group clearfix ">
                                         <label class="control-label col-sm-3 bk-lh30 pt0">使用系统：</label>
@@ -182,7 +182,7 @@
             });
         }
         var jsondata = {};
-        $("#submitData").click(function(){
+        $("#submitData").click(function(){ // 查询调用接口
             var datas = $('#getFormData').serialize();
             $.ajax({
                 url: "{% url 'framework:getUsageData' %}",
@@ -190,23 +190,22 @@
                 dataType:'json',
                 data: datas,
                 success: function(res){
-                    if (res.result){
-                        diskUsage(res.data);
-                        keys = [];
-                        for (var key in jsondata) {
-                            keys.push(key);
-                             $("#diskTime").on("click", "#"+key, function () {
-                                defaultDisk(jsondata[key], key);
-                            });
-                        }
-                        diskTimes(keys);
-                        defaultDisk(jsondata[keys[0]], keys[0]);
-
-                    }
+                    diskResult(res);
                  }
             });
         });
-        function defaultDisk(queryTime, defaultTime) {
+        function diskResult(res) {  // 获取查询日期集合
+            if (res.result){
+                diskUsage(res.data);
+                keys = [];
+                for (var key in jsondata) {
+                    keys.push(key);
+                }
+                diskTimes(keys);
+                defaultDisk(jsondata[keys[0]], keys[0]); // 默认加载第一个数据
+            }
+        }
+        function defaultDisk(queryTime, defaultTime) { // 展示的数据
             defaultRates = [];
             defaultTimes = [];
             for (j = 0,len=queryTime.length; j < len; j++){
@@ -222,7 +221,7 @@
                 data: data // 图表数据
             });
         }
-        function diskTimes(times) {
+        function diskTimes(times) { // 时间轴
             var _html = "";
             for (j = 0,len=times.length; j < len; j++) {
                 var aTime = times[j].replace(/\-/g,"");;
@@ -231,7 +230,7 @@
             $("#diskTime").html(_html);
             onDiskClick();
         }
-        function onDiskClick() {
+        function onDiskClick() { // 给时间轴绑定点击事件
             var _clickJS = '<script>';
             for (var key in jsondata) {
                 var strKey = key.replace(/\-/g,"");
@@ -241,7 +240,7 @@
             $("#diskScript").after(_clickJS);
         }
 
-        function diskUsage(datas) {
+        function diskUsage(datas) { // 对返回的数据按日期分组
             for (j = 0,len=datas.length; j < len; j++) {
                 var strTime = datas[j].add_time;
                 var thisDate = strTime.split(" ")[0];
