@@ -225,8 +225,8 @@
         function diskTimes(times) {
             var _html = "";
             for (j = 0,len=times.length; j < len; j++) {
-                var aTime = times[j];
-                _html = _html+"<li class='info' id='"+aTime+"'> <div class=''> 查询日期 <span class='timeline-simple-date'>"+aTime+"</span></div></li>";
+                var aTime = times[j].replace(/\-/g,"");;
+                _html = _html+"<li class='info' id='diskData_"+aTime+"'> <div class=''> 查询日期 <span class='timeline-simple-date'>"+aTime+"</span></div></li>";
             }
             $("#diskTime").html(_html);
             onDiskClick();
